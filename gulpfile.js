@@ -1,15 +1,21 @@
-var gulp = require('gulp');
-var plumber = require('gulp-plumber');
+const gulp = require('gulp');
+const plumber = require('gulp-plumber');
 const uglify = require('gulp-uglify');
-const sass = require('gulp-dart-sass');
+const dartSass = require('sass');
+const gulpSass = require('gulp-sass')(dartSass);
 const wait = require('gulp-wait');
 const babel = require('gulp-babel');
 const rename = require('gulp-rename');
-const del = require('del');
+const fs = require('fs');
+const path = require('path');
 
 // Clean the 'dist' directory
-gulp.task('clean', function() {
-    return del(['dist']);
+gulp.task('clean', function(done) {
+    const distPath = path.resolve(__dirname, 'dist');
+    if (fs.existsSync(distPath)) {
+        fs.rmdirSync(distPath, { recursive: true });
+    }
+    done();
 });
 
 // Build scripts into 'dist/js'
@@ -39,7 +45,7 @@ gulp.task('styles', function() {
     console.log('Running styles task...');
     return gulp.src('./scss/styles.scss')
         .pipe(wait(250))
-        .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+        .pipe(gulpSass({ outputStyle: 'compressed' }).on('error', gulpSass.logError))
         .pipe(gulp.dest('dist/css'));
 });
 
