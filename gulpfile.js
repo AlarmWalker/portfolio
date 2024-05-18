@@ -1,12 +1,13 @@
 var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 const uglify = require('gulp-uglify');
-const sass = require('gulp-sass');
+const sass = require('gulp-dart-sass');
 const wait = require('gulp-wait');
-const babel = require('gulp-babel');;
+const babel = require('gulp-babel');
 const rename = require('gulp-rename');
 
 gulp.task('scripts', function() {
+    console.log('Running scripts task...');
     return gulp.src('./js/scripts.js')
         .pipe(plumber(plumber({
             errorHandler: function (err) {
@@ -15,25 +16,27 @@ gulp.task('scripts', function() {
             }
         })))
         .pipe(babel({
-          presets: [['@babel/env', {modules:false}]]
+          presets: [['@babel/env', {modules: false}]]
         }))
         .pipe(uglify({
             output: {
                 comments: '/^!/'
             }
         }))
-        .pipe(rename({extname: '.min.js'}))
+        .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest('./js'));
 });
 
-gulp.task('styles', function () {
+gulp.task('styles', function() {
+    console.log('Running styles task...');
     return gulp.src('./scss/styles.scss')
         .pipe(wait(250))
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
         .pipe(gulp.dest('./css'));
 });
 
 gulp.task('watch', function() {
+    console.log('Watching files for changes...');
     gulp.watch('./js/scripts.js', gulp.series('scripts'));
     gulp.watch('./scss/styles.scss', gulp.series('styles'));
 });
