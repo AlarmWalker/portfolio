@@ -6,17 +6,18 @@ const wait = require('gulp-wait');
 const babel = require('gulp-babel');
 const rename = require('gulp-rename');
 
+// Define the 'scripts' task
 gulp.task('scripts', function() {
     console.log('Running scripts task...');
     return gulp.src('./js/scripts.js')
-        .pipe(plumber(plumber({
+        .pipe(plumber({
             errorHandler: function (err) {
                 console.log(err);
                 this.emit('end');
             }
-        })))
+        }))
         .pipe(babel({
-          presets: [['@babel/env', {modules: false}]]
+          presets: [['@babel/env', { modules: false }]]
         }))
         .pipe(uglify({
             output: {
@@ -27,6 +28,7 @@ gulp.task('scripts', function() {
         .pipe(gulp.dest('./js'));
 });
 
+// Define the 'styles' task
 gulp.task('styles', function() {
     console.log('Running styles task...');
     return gulp.src('./scss/styles.scss')
@@ -35,8 +37,21 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('./css'));
 });
 
+// Define the 'build' task that runs both 'scripts' and 'styles'
+gulp.task('build', gulp.series('scripts', 'styles'));
+
+// Define the 'watch' task
 gulp.task('watch', function() {
-    console.log('Watching files for changes...');
-    gulp.watch('./js/scripts.js', gulp.series('scripts'));
-    gulp.watch('./scss/styles.scss', gulp.series('styles'));
+    console.log('Starting watch task...');
+    gulp.watch('./js/scripts.js', gulp.series('scripts'))
+        .on('change', function(path, stats) {
+            console.log(`File ${path} was changed`);
+        });
+    gulp.watch('./scss/styles.scss', gulp.series('styles'))
+        .on('change', function(path, stats) {
+            console.log(`File ${path} was changed`);
+        });
 });
+
+// Default task
+gulp.task('default', gulp.series('build', 'watch'));
