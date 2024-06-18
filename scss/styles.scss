@@ -646,7 +646,7 @@ footer {
         object-fit:cover;
     }
 
-    p {
+    p, ul {
         text-align: left;
     }
 
@@ -658,7 +658,8 @@ footer {
 
 .project {
     position: relative;
-    max-width: 900px;
+    max-width: 1100px;
+    height: 500px;
     margin: 0 auto 30px auto;
     overflow: hidden;
     background: #fff;
